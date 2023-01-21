@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User, Character, Favorite, Planet, Vehicle
 #from models import Person
 
 app = Flask(__name__)
@@ -45,6 +45,56 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
+
+@app.route("/people", methods=["GET"])
+def people():
+    Character = Character.query.all()
+    character_serialized = list(map( lambda character: character.serialize(), character))
+    return jsonify(character_serialized)
+
+@app.route("/people/<int:id>", methods=["GET"])
+def people(id):
+    Character = Character.query.get(id)
+    character_serialized = character.serialize()
+    return jsonify(character_serialized)
+
+@app.route("/planets", methods=["GET"])
+def planets():
+    Planet = Planet.query.all()
+    planet_serialized = list(map( lambda planet: planet.serialize(), planet))
+    return jsonify(planet_serialized)
+
+@app.route("/planets/<int:id>", methods=["GET"])
+def planet(id):
+    Planet = Planet.query.get(id)
+    planet_serialized = planet.serialize()
+    return jsonify(planet_serialized)
+
+@app.route("/vehicles", methods=["GET"])
+def vehicles():
+    Vehicle = Vehicle.query.all()
+    vehicle_serialized = list(map( lambda vehicle: vehicle.serialize(), vehicle))
+    return jsonify(vehicle_serialized)
+
+@app.route("/vehicles/<int:id>", methods=["GET"])
+def vehicle(id):
+    Vehicle = Vehicle.query.get(id)
+    vehicle_serialized = vehicle.serialize()
+    return jsonify(vehicle_serialized)
+
+
+@app.route("/users", methods=["GET"])
+def users():
+    User = User.query.all()
+    user_serialized = list(map( lambda user: user.serialize(), user))
+    return jsonify(user_serialized)
+
+@app.route("/users/favorites/<int:user_id>", methods=["GET"])
+def user_favorites(user_id):
+    user= User.query.get(user_id)
+    favorite = Favorite.query.filter_by(user_id=user_id).all()
+    favorite_serialized = list(map( lambda favorite: favorite.serialize(), favorite))
+    return jsonify(favorite_serialized)
 
 
 
